@@ -55,8 +55,8 @@ export class ArtistsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    const user = this.artistsService.findOne(id);
-    if (user) {
+    const artist = this.artistsService.findOne(id);
+    if (artist) {
       return this.artistsService.remove(id);
     }
     throw new HttpException(CustomErrors.artistNotExist, HttpStatus.NOT_FOUND);

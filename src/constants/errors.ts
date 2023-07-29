@@ -4,4 +4,5 @@ export enum CustomErrors {
   passwordsEquals = 'Passwords are equals',
   oldPasswordWrong = 'Old password is wrong',
   artistNotExist = "Artist doesn't exist",
+  tracksNotExist = "Tracks doesn't exist",
 }
