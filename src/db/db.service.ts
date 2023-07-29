@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/users/entity/user.entity';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class DBService {
-  users: UserEntity[] = [];
+  users: User[] = [];
+  artists: Artist[] = [];
 }

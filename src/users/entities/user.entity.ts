@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from '../dto/create-user.dto';
-export class UserEntity {
+export class User {
   id: string;
   login: string;
   version: number;
