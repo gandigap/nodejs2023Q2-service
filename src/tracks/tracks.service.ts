@@ -32,7 +32,7 @@ export class TracksService {
   }
 
   remove(id: string) {
-    const userIndex = this.db.tracks.findIndex((track) => track.id === id);
-    this.db.tracks.splice(userIndex, 1);
+    const trackIndex = this.db.tracks.findIndex((track) => track.id === id);
+    this.db.tracks.splice(trackIndex, 1);
   }
 }

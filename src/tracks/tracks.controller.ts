@@ -36,7 +36,7 @@ export class TracksController {
     if (track) {
       return track;
     }
-    throw new HttpException(CustomErrors.tracksNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.trackNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Put(':id')
@@ -49,7 +49,7 @@ export class TracksController {
       return this.tracksService.update(id, updateTrackDto);
     }
 
-    throw new HttpException(CustomErrors.tracksNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.trackNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Delete(':id')
@@ -59,6 +59,6 @@ export class TracksController {
     if (track) {
       return this.tracksService.remove(id);
     }
-    throw new HttpException(CustomErrors.tracksNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.trackNotExist, HttpStatus.NOT_FOUND);
   }
 }
