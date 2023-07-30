@@ -10,4 +10,9 @@ export class DBService {
   artists: Artist[] = [];
   tracks: Track[] = [];
   albums: Album[] = [];
+  favorites: {
+    artists: Artist[];
+    tracks: Track[];
+    albums: Album[];
+  };
 }

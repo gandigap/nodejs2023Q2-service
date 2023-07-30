@@ -25,8 +25,8 @@ export class TracksService {
   update(id: string, updateTrackDto: UpdateTrackDto): Track | undefined {
     const track = this.db.tracks.find((track) => track.id === id);
     track.name = updateTrackDto.name;
-    track.artistId = updateTrackDto.artistId;
-    track.albumId = updateTrackDto.albumId;
+    track.artistId = updateTrackDto.artistId || null;
+    track.albumId = updateTrackDto.albumId || null;
     track.duration = updateTrackDto.duration;
     return track;
   }
