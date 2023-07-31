@@ -1,9 +1,15 @@
 export enum CustomErrors {
-  userExist = 'User exist',
-  userNotExist = "User doesn't exist",
-  passwordsEquals = 'Passwords are equals',
-  oldPasswordWrong = 'Old password is wrong',
-  artistNotExist = "Artist doesn't exist",
-  trackNotExist = "Track doesn't exist",
-  albumNotExist = "Album doesn't exist",
+  UserExist = 'User exist',
+  UserNotExist = "User doesn't exist",
+  PasswordsEquals = 'Passwords are equals',
+  OldPasswordWrong = 'Old password is wrong',
+  ArtistNotExist = "Artist doesn't exist",
+  TrackNotExist = "Track doesn't exist",
+  AlbumNotExist = "Album doesn't exist",
+}
+
+export enum Entities {
+  Tracks = 'tracks',
+  Albums = 'albums',
+  Artists = 'artists',
 }

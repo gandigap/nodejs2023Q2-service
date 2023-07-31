@@ -36,7 +36,7 @@ export class ArtistsController {
     if (artist) {
       return artist;
     }
-    throw new HttpException(CustomErrors.artistNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.ArtistNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Put(':id')
@@ -49,7 +49,7 @@ export class ArtistsController {
       return this.artistsService.update(id, updateArtistDto);
     }
 
-    throw new HttpException(CustomErrors.artistNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.ArtistNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Delete(':id')
@@ -59,6 +59,6 @@ export class ArtistsController {
     if (artist) {
       return this.artistsService.remove(id);
     }
-    throw new HttpException(CustomErrors.artistNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.ArtistNotExist, HttpStatus.NOT_FOUND);
   }
 }

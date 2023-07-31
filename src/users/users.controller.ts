@@ -26,7 +26,7 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     if (this.usersService.findByLogin(createUserDto.login)) {
-      throw new HttpException(CustomErrors.userExist, HttpStatus.BAD_REQUEST);
+      throw new HttpException(CustomErrors.UserExist, HttpStatus.BAD_REQUEST);
     }
     return this.usersService.create(createUserDto);
   }
@@ -42,7 +42,7 @@ export class UsersController {
     if (user) {
       return user;
     }
-    throw new HttpException(CustomErrors.userNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Put(':id')
@@ -55,14 +55,14 @@ export class UsersController {
 
     if (newPassword === oldPassword) {
       throw new HttpException(
-        CustomErrors.passwordsEquals,
+        CustomErrors.PasswordsEquals,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (user && user.password !== oldPassword) {
       throw new HttpException(
-        CustomErrors.oldPasswordWrong,
+        CustomErrors.OldPasswordWrong,
         HttpStatus.FORBIDDEN,
       );
     }
@@ -71,7 +71,7 @@ export class UsersController {
       return this.usersService.update(id, updatePasswordDto);
     }
 
-    throw new HttpException(CustomErrors.userNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Delete(':id')
@@ -81,6 +81,6 @@ export class UsersController {
     if (user) {
       return this.usersService.remove(id);
     }
-    throw new HttpException(CustomErrors.userNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
   }
 }

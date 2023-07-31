@@ -36,7 +36,7 @@ export class AlbumsController {
     if (album) {
       return album;
     }
-    throw new HttpException(CustomErrors.albumNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Put(':id')
@@ -49,7 +49,7 @@ export class AlbumsController {
       return this.albumsService.update(id, updateAlbumDto);
     }
 
-    throw new HttpException(CustomErrors.albumNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Delete(':id')
@@ -59,6 +59,6 @@ export class AlbumsController {
     if (album) {
       return this.albumsService.remove(id);
     }
-    throw new HttpException(CustomErrors.albumNotExist, HttpStatus.NOT_FOUND);
+    throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
   }
 }

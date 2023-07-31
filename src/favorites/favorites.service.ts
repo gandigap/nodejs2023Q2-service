@@ -1,8 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { Album } from 'src/albums/entities/album.entity';
-import { Artist } from 'src/artists/entities/artist.entity';
 import { DBService } from 'src/db/db.service';
-import { Track } from 'src/tracks/entities/track.entity';
 
 @Injectable()
 export class FavoritesService {
@@ -18,7 +15,7 @@ export class FavoritesService {
     const favoritesEntries = Object.entries(this.db.favorites);
     const result = favoritesEntries.reduce((acc, [key, collection]) => {
       acc[key] = collection.map((id) => {
-        const entities = this.db[key] as (Track | Album | Artist)[];
+        const entities = this.db[key];
 
         return entities.find((entity) => entity.id === id);
       });
@@ -27,78 +24,29 @@ export class FavoritesService {
     return result;
   }
 
-  addFavoriteArtist(id: string) {
-    const index = this.db.artists.findIndex((entity) => entity.id === id);
+  addFavoriteEntity(id: string, entityName) {
+    const index = this.db[entityName].findIndex((entity) => entity.id === id);
 
     if (index === -1) {
       throw new UnprocessableEntityException();
     }
 
-    if (!this.db.favorites?.artists.includes(id)) {
-      this.db.favorites.artists = [id];
+    if (!this.db.favorites[entityName].includes(id)) {
+      this.db.favorites[entityName] = [...this.db.favorites[entityName], id];
     }
-    return id;
   }
 
-  deleteFavoriteArtist(id: string) {
+  deleteFavoriteEntity(id: string, entityName) {
     let result = false;
-    this.db.favorites.artists = this.db.favorites.artists.filter((artistId) => {
-      if (artistId === id) {
-        result = true;
-        return false;
-      }
-      return true;
-    });
-
-    return result;
-  }
-
-  addFavoriteAlbum(id: string) {
-    const index = this.db.albums.findIndex((entity) => entity.id === id);
-
-    if (index === -1) {
-      throw new UnprocessableEntityException();
-    }
-
-    if (!this.db.favorites.albums.includes(id)) {
-      this.db.favorites.albums = [...this.db.favorites.albums, id];
-    }
-  }
-
-  deleteFavoriteAlbum(id: string) {
-    let result = false;
-    this.db.favorites.albums = this.db.favorites.albums.filter((albumId) => {
-      if (albumId === id) {
-        result = true;
-        return false;
-      }
-      return true;
-    });
-
-    return result;
-  }
-
-  addFavoriteTrack(id: string) {
-    const index = this.db.tracks.findIndex((entity) => entity.id === id);
-
-    if (index === -1) {
-      throw new UnprocessableEntityException();
-    }
-
-    if (!this.db.favorites.tracks.includes(id)) {
-      this.db.favorites.tracks = [...this.db.favorites.tracks, id];
-    }
-  }
-
-  deleteFavoriteTrack(id: string) {
-    let result = false;
-    this.db.favorites.tracks = this.db.favorites.tracks.filter((trackId) => {
-      if (trackId === id) {
-        result = true;
-        return false;
-      }
-      return true;
-    });
+    this.db.favorites[entityName] = this.db.favorites[entityName].filter(
+      (entity) => {
+        if (entity === id) {
+          result = true;
+          return false;
+        }
+        return true;
+      },
+    );
 
     return result;
   }
