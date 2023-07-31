@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DBService } from 'src/db/db.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -32,9 +32,19 @@ export class AlbumsService {
 
   remove(id: string) {
     const albumIndex = this.db.albums.findIndex((album) => album.id === id);
+    const albumFavoritesIndex = this.db.favorites.albums.findIndex(
+      (album) => album === id,
+    );
+
+    if (albumIndex === -1) {
+      throw new NotFoundException();
+    }
+    if (albumFavoritesIndex !== -1) {
+      this.db.favorites.albums.splice(albumFavoritesIndex, 1);
+    }
 
     this.db.tracks.forEach((track) => {
-      if (track.albumId == id) {
+      if (track.albumId === id) {
         track.albumId = null;
       }
     });

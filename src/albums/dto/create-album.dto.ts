@@ -4,9 +4,9 @@ export class CreateAlbumDto {
   @IsString()
   readonly name: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
   readonly artistId: string;
 
   @IsNumber()

@@ -8,11 +8,11 @@ export class Track {
   albumId: string | null;
   duration: number;
 
-  constructor(createTrackDto: Partial<CreateTrackDto>) {
+  constructor(createTrackDto: CreateTrackDto) {
     this.id = uuidv4();
     this.name = createTrackDto.name;
-    this.artistId = createTrackDto.artistId || null;
-    this.albumId = createTrackDto.albumId || null;
+    this.artistId = createTrackDto.artistId;
+    this.albumId = createTrackDto.albumId;
     this.duration = createTrackDto.duration;
   }
 }

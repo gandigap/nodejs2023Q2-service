@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { Album } from 'src/albums/entities/album.entity';
 import { Artist } from 'src/artists/entities/artist.entity';
 import { DBService } from 'src/db/db.service';
@@ -28,6 +28,12 @@ export class FavoritesService {
   }
 
   addFavoriteArtist(id: string) {
+    const index = this.db.artists.findIndex((entity) => entity.id === id);
+
+    if (index === -1) {
+      throw new UnprocessableEntityException();
+    }
+
     if (!this.db.favorites?.artists.includes(id)) {
       this.db.favorites.artists = [id];
     }
@@ -48,6 +54,12 @@ export class FavoritesService {
   }
 
   addFavoriteAlbum(id: string) {
+    const index = this.db.albums.findIndex((entity) => entity.id === id);
+
+    if (index === -1) {
+      throw new UnprocessableEntityException();
+    }
+
     if (!this.db.favorites.albums.includes(id)) {
       this.db.favorites.albums = [...this.db.favorites.albums, id];
     }
@@ -67,6 +79,12 @@ export class FavoritesService {
   }
 
   addFavoriteTrack(id: string) {
+    const index = this.db.tracks.findIndex((entity) => entity.id === id);
+
+    if (index === -1) {
+      throw new UnprocessableEntityException();
+    }
+
     if (!this.db.favorites.tracks.includes(id)) {
       this.db.favorites.tracks = [...this.db.favorites.tracks, id];
     }
