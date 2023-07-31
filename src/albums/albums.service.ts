@@ -32,6 +32,13 @@ export class AlbumsService {
 
   remove(id: string) {
     const albumIndex = this.db.albums.findIndex((album) => album.id === id);
+
+    this.db.tracks.forEach((track) => {
+      if (track.albumId == id) {
+        track.albumId = null;
+      }
+    });
+
     this.db.albums.splice(albumIndex, 1);
   }
 }
