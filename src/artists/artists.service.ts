@@ -31,6 +31,19 @@ export class ArtistsService {
 
   remove(id: string) {
     const artistIndex = this.db.artists.findIndex((artist) => artist.id === id);
+
+    this.db.albums.forEach((album) => {
+      if (album.artistId === id) {
+        album.artistId = null;
+      }
+    });
+
+    this.db.tracks.forEach((track) => {
+      if (track.artistId === id) {
+        track.artistId = null;
+      }
+    });
+
     this.db.artists.splice(artistIndex, 1);
   }
 }

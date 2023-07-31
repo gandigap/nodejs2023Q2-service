@@ -11,6 +11,6 @@ export class Album {
     this.id = uuidv4();
     this.name = createAlbumDto.name;
     this.year = createAlbumDto.year;
-    this.artistId = createAlbumDto.artistId || null;
+    this.artistId = createAlbumDto.artistId;
   }
 }
