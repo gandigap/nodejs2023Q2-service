@@ -2,20 +2,20 @@ import { DataSource } from 'typeorm';
 import 'dotenv/config';
 
 const {
-  POSTGRES_USER,
-  POSTGRES_PASSWORD,
-  POSTGRES_DB,
-  POSTGRES_PORT,
-  POSTGRES_HOST,
+  TYPEORM_USERNAME,
+  TYPEORM_PASSWORD,
+  TYPEORM_DATABASE,
+  TYPEORM_PORT,
+  TYPEORM_HOST,
 } = process.env;
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: POSTGRES_HOST,
-  port: +POSTGRES_PORT,
-  username: POSTGRES_USER,
-  password: POSTGRES_PASSWORD,
-  database: POSTGRES_DB,
+  host: TYPEORM_HOST,
+  port: +TYPEORM_PORT,
+  username: TYPEORM_USERNAME,
+  password: TYPEORM_PASSWORD,
+  database: TYPEORM_DATABASE,
   synchronize: false,
   entities: [],
   migrations: [],
