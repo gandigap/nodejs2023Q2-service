@@ -1,5 +1,4 @@
 dist
 node_modules
-database/db_data
 .env
-pgdata
+logs

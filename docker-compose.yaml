@@ -3,7 +3,9 @@ version: '3.8'
 services:  
   db:
     container_name: db
-    image: postgres:15.3-alpine3.18
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
     restart: always    
     environment:
       - POSTGRES_USER=${TYPEORM_USERNAME}
@@ -37,4 +39,4 @@ services:
       - TYPEORM_HOST=db
 
 networks:
-  home-library-network:
+  home-library-network:  
