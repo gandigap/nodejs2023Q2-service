@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
   username: TYPEORM_USERNAME,
   password: TYPEORM_PASSWORD,
   database: TYPEORM_DATABASE,
-  synchronize: false,
+  synchronize: true,
   entities: [],
   migrations: [],
 });

@@ -16,7 +16,7 @@ services:
     networks:
       - home-library-network
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
       
   app:
     container_name: app
@@ -39,4 +39,7 @@ services:
       - TYPEORM_HOST=db
 
 networks:
-  home-library-network:  
+  home-library-network:
+
+volumes:
+  pgdata:
