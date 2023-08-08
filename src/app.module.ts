@@ -8,29 +8,15 @@ import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { validate } from './config/env.validation';
-import { User } from './users/entities/user.entity';
+import { AppDataSource } from './datasource';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('TYPEORM_HOST'),
-        port: configService.get<number>('TYPEORM_PORT'),
-        username: configService.get<string>('TYPEORM_USERNAME'),
-        password: configService.get<string>('TYPEORM_PASSWORD'),
-        database: configService.get<string>('TYPEORM_DATABASE'),
-        entities: [User],
-        synchronize: false,
-        logging: configService.get<boolean>('TYPEORM_LOGGING'),
-      }),
-      inject: [ConfigService],
-    }),
+    TypeOrmModule.forRoot(AppDataSource.options),
     DBModule,
     UsersModule,
     ArtistsModule,
