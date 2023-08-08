@@ -15,7 +15,7 @@ export class User {
   createdAt: number;
   @Column()
   updatedAt: number;
-
+  @Column()
   @Exclude()
   password: string;
 

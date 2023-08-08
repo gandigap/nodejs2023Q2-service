@@ -7,6 +7,7 @@ services:
       context: ./postgres
       dockerfile: Dockerfile
     restart: always    
+    image: gandigap/rsdb:latest
     environment:
       - POSTGRES_USER=${TYPEORM_USERNAME}
       - POSTGRES_PASSWORD=${TYPEORM_PASSWORD}
@@ -17,6 +18,7 @@ services:
       - home-library-network
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
       
   app:
     container_name: app
@@ -24,7 +26,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: always
-    image: app:latest
+    image: gandigap/rsapp:latest
     env_file:
       - .env
     depends_on:
@@ -43,3 +45,4 @@ networks:
 
 volumes:
   pgdata:
+  pglogs:
