@@ -18,16 +18,17 @@
 git clone {repository URL}
 ```
 
-## Installing NPM modules
-
-```
-npm install
-```
 
 ## Running application
 
 ```
-npm start
+docker-compose up
+```
+
+## Run migrations
+
+```
+npm run migration:run
 ```
 
 After starting the app on port (4000 as default) you can open
@@ -62,6 +63,11 @@ To run only specific test suite with authorization
 npm run test:auth -- <path to suite>
 ```
 
+## Generate migrations
+
+```
+npm run migration:generate ./src/migrations/example  
+``` 
 ### Auto-fix and format
 
 ```
