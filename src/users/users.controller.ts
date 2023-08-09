@@ -24,21 +24,19 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    if (this.usersService.findByLogin(createUserDto.login)) {
-      throw new HttpException(CustomErrors.UserExist, HttpStatus.BAD_REQUEST);
-    }
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+    return user;
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    const user = this.usersService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const user = await this.usersService.findOne(id);
     if (user) {
       return user;
     }
@@ -46,13 +44,13 @@ export class UsersController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdateUserdDto,
   ) {
     const { newPassword, oldPassword } = updatePasswordDto;
-    const user = this.usersService.findOne(id);
 
+    const user = await this.usersService.findOne(id);
     if (newPassword === oldPassword) {
       throw new HttpException(
         CustomErrors.PasswordsEquals,
@@ -60,7 +58,7 @@ export class UsersController {
       );
     }
 
-    if (user && user.password !== oldPassword) {
+    if (user && (await user).password !== oldPassword) {
       throw new HttpException(
         CustomErrors.OldPasswordWrong,
         HttpStatus.FORBIDDEN,
@@ -68,7 +66,7 @@ export class UsersController {
     }
 
     if (user) {
-      return this.usersService.update(id, updatePasswordDto);
+      return await this.usersService.update(id, updatePasswordDto);
     }
 
     throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
@@ -76,11 +74,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    const user = this.usersService.findOne(id);
-    if (user) {
-      return this.usersService.remove(id);
-    }
-    throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.usersService.remove(id);
   }
 }

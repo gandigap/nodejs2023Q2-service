@@ -1,42 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserdDto } from './dto/update-password.dto';
-import { DBService } from 'src/db/db.service';
 import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CustomErrors } from 'src/constants/errors';
 
 @Injectable()
 export class UsersService {
-  constructor(private db: DBService) {}
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const user = new User(createUserDto);
-    this.db.users.push(user);
-
+    await this.userRepository.insert(user);
     return user;
   }
 
-  findAll() {
-    return this.db.users;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
-  findOne(id: string): User | undefined {
-    return this.db.users.find((user) => user.id === id);
+  async findOne(id: string): Promise<User | undefined> {
+    const user = await this.userRepository.findOneBy({ id });
+    return user;
   }
 
-  update(id: string, updateUserdDto: UpdateUserdDto): User | undefined {
-    const user = this.db.users.find((user) => user.id === id);
+  async update(
+    id: string,
+    updateUserdDto: UpdateUserdDto,
+  ): Promise<User | undefined> {
+    const user = await this.userRepository.findOneBy({ id });
     user.password = updateUserdDto.newPassword;
     user.version += 1;
     user.updatedAt = Date.now();
+    user.createdAt = +user.createdAt;
+    await this.userRepository.save(user);
     return user;
   }
 
-  remove(id: string) {
-    const userIndex = this.db.users.findIndex((user) => user.id === id);
-    this.db.users.splice(userIndex, 1);
-  }
-
-  findByLogin(login: string): User | undefined {
-    return this.db.users.find((user) => user.login === login);
+  async remove(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
+    }
+    await this.userRepository.delete(id);
   }
 }

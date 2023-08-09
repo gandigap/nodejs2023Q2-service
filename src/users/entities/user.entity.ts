@@ -11,9 +11,9 @@ export class User {
   login: string;
   @Column()
   version: number;
-  @Column()
+  @Column('bigint')
   createdAt: number;
-  @Column()
+  @Column('bigint')
   updatedAt: number;
   @Column()
   @Exclude()
