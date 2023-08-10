@@ -1,14 +1,18 @@
-import { v4 as uuidv4 } from 'uuid';
-import { CreateArtistDto } from '../dto/create-artist.dto';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Track } from 'src/tracks/entities/track.entity';
+import { Album } from 'src/albums/entities/album.entity';
 
+@Entity({ name: 'artist' })
 export class Artist {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
   name: string;
+  @Column()
   grammy: boolean;
 
-  constructor(createArtistDto: Partial<CreateArtistDto>) {
-    this.id = uuidv4();
-    this.name = createArtistDto.name;
-    this.grammy = createArtistDto.grammy;
-  }
+  @OneToMany(() => Track, (track) => track.artistId)
+  tracks: Track[];
+  @OneToMany(() => Album, (album) => album.artistId)
+  albums: Album[];
 }

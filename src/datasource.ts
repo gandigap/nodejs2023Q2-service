@@ -1,6 +1,10 @@
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
 import { User } from './users/entities/user.entity';
+import { Artist } from './artists/entities/artist.entity';
+import { Track } from './tracks/entities/track.entity';
+import { Album } from './albums/entities/album.entity';
+import { Favorites } from './favorites/entities/favorite.entity';
 
 const {
   TYPEORM_USERNAME,
@@ -18,7 +22,7 @@ export const AppDataSource = new DataSource({
   password: TYPEORM_PASSWORD,
   database: TYPEORM_DATABASE,
   synchronize: false,
-  entities: [User],
+  entities: [User, Track, Artist, Album, Favorites],
   migrations: ['dist/migrations/*.js'],
   logging: false,
 });

@@ -1,54 +1,78 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { DBService } from 'src/db/db.service';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FavoritesService } from 'src/favorites/favorites.service';
+import { TracksService } from 'src/tracks/tracks.service';
+import { CustomErrors } from 'src/constants/errors';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private db: DBService) {}
-  create(createAlbumDto: CreateAlbumDto) {
-    const album = new Album(createAlbumDto);
-    this.db.albums.push(album);
+  constructor(
+    @InjectRepository(Album)
+    private readonly albumsRepository: Repository<Album>,
+
+    @Inject(forwardRef(() => TracksService))
+    private readonly tracksService: TracksService,
+
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+  ) {}
+
+  async create(createAlbumDto: CreateAlbumDto) {
+    const album = await this.albumsRepository.create({ ...createAlbumDto });
+
+    return await this.albumsRepository.save(album);
+  }
+
+  async findAll() {
+    return await this.albumsRepository.find();
+  }
+
+  async findOne(id: string): Promise<Album | undefined> {
+    const album = await this.albumsRepository.findOneBy({ id });
+    if (!album) {
+      throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
+    }
 
     return album;
   }
 
-  findAll() {
-    return this.db.albums;
-  }
+  async update(
+    id: string,
+    updateAlbumDto: UpdateAlbumDto,
+  ): Promise<Album | undefined> {
+    const album = await this.albumsRepository.findOneBy({ id });
 
-  findOne(id: string): Album | undefined {
-    return this.db.albums.find((album) => album.id === id);
-  }
+    if (!album) {
+      throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
+    }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto): Album | undefined {
-    const album = this.db.albums.find((album) => album.id === id);
     album.name = updateAlbumDto.name;
     album.year = updateAlbumDto.year;
     album.artistId = updateAlbumDto.artistId;
-    return album;
+
+    const updatedAlbum = { ...album, ...updateAlbumDto };
+
+    await this.albumsRepository.save(updatedAlbum);
+    return updatedAlbum;
   }
 
-  remove(id: string) {
-    const albumIndex = this.db.albums.findIndex((album) => album.id === id);
-    const albumFavoritesIndex = this.db.favorites.albums.findIndex(
-      (album) => album === id,
-    );
+  async remove(id: string) {
+    const album = await this.albumsRepository.findOneBy({ id });
 
-    if (albumIndex === -1) {
-      throw new NotFoundException();
-    }
-    if (albumFavoritesIndex !== -1) {
-      this.db.favorites.albums.splice(albumFavoritesIndex, 1);
+    if (!album) {
+      throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
     }
 
-    this.db.tracks.forEach((track) => {
-      if (track.albumId === id) {
-        track.albumId = null;
-      }
-    });
-
-    this.db.albums.splice(albumIndex, 1);
+    await this.albumsRepository.delete(id);
   }
 }
