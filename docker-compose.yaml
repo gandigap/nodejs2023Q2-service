@@ -42,6 +42,7 @@ services:
 
 networks:
   home-library-network:
+    driver: bridge
 
 volumes:
   pgdata:
