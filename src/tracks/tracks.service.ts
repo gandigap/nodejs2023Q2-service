@@ -1,17 +1,12 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  forwardRef,
-} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
+
+import { FavoritesService } from 'src/favorites/favorites.service';
+
+import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { Repository } from 'typeorm';
-import { CustomErrors } from 'src/constants/errors';
-import { CreateTrackDto } from './dto/create-track.dto';
 
 @Injectable()
 export class TracksService {
@@ -37,7 +32,7 @@ export class TracksService {
     const track = await this.tracksRepository.findOneBy({ id });
 
     if (!track) {
-      throw new HttpException(CustomErrors.TrackNotExist, HttpStatus.NOT_FOUND);
+      return null;
     }
 
     return track;
@@ -49,10 +44,6 @@ export class TracksService {
   ): Promise<Track | undefined> {
     const track = await this.tracksRepository.findOneBy({ id });
 
-    if (!track) {
-      throw new HttpException(CustomErrors.TrackNotExist, HttpStatus.NOT_FOUND);
-    }
-
     const updatedTrack = { ...track, ...updateTrackDto };
 
     await this.tracksRepository.save(updatedTrack);
@@ -61,12 +52,6 @@ export class TracksService {
   }
 
   async remove(id: string) {
-    const track = await this.tracksRepository.findOneBy({ id });
-
-    if (!track) {
-      throw new HttpException(CustomErrors.TrackNotExist, HttpStatus.NOT_FOUND);
-    }
-
     await this.tracksRepository.delete(id);
   }
 }

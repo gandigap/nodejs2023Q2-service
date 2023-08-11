@@ -9,10 +9,13 @@ import {
   Put,
   ParseUUIDPipe,
   HttpCode,
+  HttpException,
 } from '@nestjs/common';
+
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { CustomErrors } from 'src/constants/errors';
 
 @Controller('artist')
 export class ArtistsController {
@@ -31,7 +34,13 @@ export class ArtistsController {
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.artistsService.findOne(id);
+    const artist = await this.artistsService.findOne(id);
+
+    if (artist) {
+      return artist;
+    }
+
+    throw new HttpException(CustomErrors.ArtistNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Put(':id')
@@ -39,14 +48,24 @@ export class ArtistsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    const artist = await this.artistsService.update(id, updateArtistDto);
+    const artist = await this.artistsService.findOne(id);
 
-    return artist;
+    if (artist) {
+      return await this.artistsService.update(id, updateArtistDto);
+    }
+
+    throw new HttpException(CustomErrors.ArtistNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.artistsService.remove(id);
+    const artist = await this.artistsService.findOne(id);
+
+    if (artist) {
+      return await this.artistsService.remove(id);
+    }
+
+    throw new HttpException(CustomErrors.ArtistNotExist, HttpStatus.NOT_FOUND);
   }
 }

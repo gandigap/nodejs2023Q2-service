@@ -24,5 +24,6 @@ export const AppDataSource = new DataSource({
   synchronize: false,
   entities: [User, Track, Artist, Album, Favorites],
   migrations: ['dist/migrations/*.js'],
+  subscribers: [],
   logging: false,
 });

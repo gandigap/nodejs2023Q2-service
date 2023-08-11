@@ -1,20 +1,14 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  forwardRef,
-} from '@nestjs/common';
-
-import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './entities/artist.entity';
-import { TracksService } from 'src/tracks/tracks.service';
-import { Repository } from 'typeorm';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { TracksService } from 'src/tracks/tracks.service';
 import { FavoritesService } from 'src/favorites/favorites.service';
 import { AlbumsService } from 'src/albums/albums.service';
+
 import { CreateArtistDto } from './dto/create-artist.dto';
-import { CustomErrors } from 'src/constants/errors';
+import { UpdateArtistDto } from './dto/update-artist.dto';
+import { Artist } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistsService {
@@ -48,11 +42,9 @@ export class ArtistsService {
     const artist = await this.artistsRepository.findOneBy({ id });
 
     if (!artist) {
-      throw new HttpException(
-        CustomErrors.ArtistNotExist,
-        HttpStatus.NOT_FOUND,
-      );
+      return null;
     }
+
     return artist;
   }
 
@@ -62,13 +54,6 @@ export class ArtistsService {
   ): Promise<Artist | undefined> {
     const artist = await this.artistsRepository.findOneBy({ id });
 
-    if (!artist) {
-      throw new HttpException(
-        CustomErrors.ArtistNotExist,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     const updatedArtist = { ...artist, ...updateArtistDto };
 
     await this.artistsRepository.save(updatedArtist);
@@ -77,15 +62,6 @@ export class ArtistsService {
   }
 
   async remove(id: string) {
-    const artist = await this.artistsRepository.findOneBy({ id });
-
-    if (!artist) {
-      throw new HttpException(
-        CustomErrors.ArtistNotExist,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     await this.artistsRepository.delete(id);
   }
 }

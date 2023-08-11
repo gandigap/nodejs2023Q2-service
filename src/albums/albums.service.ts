@@ -1,18 +1,12 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  forwardRef,
-} from '@nestjs/common';
-import { CreateAlbumDto } from './dto/create-album.dto';
-import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from './entities/album.entity';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { CreateAlbumDto } from './dto/create-album.dto';
+import { UpdateAlbumDto } from './dto/update-album.dto';
 import { FavoritesService } from 'src/favorites/favorites.service';
 import { TracksService } from 'src/tracks/tracks.service';
-import { CustomErrors } from 'src/constants/errors';
+import { Album } from './entities/album.entity';
 
 @Injectable()
 export class AlbumsService {
@@ -39,8 +33,9 @@ export class AlbumsService {
 
   async findOne(id: string): Promise<Album | undefined> {
     const album = await this.albumsRepository.findOneBy({ id });
+
     if (!album) {
-      throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
+      return null;
     }
 
     return album;
@@ -51,10 +46,6 @@ export class AlbumsService {
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<Album | undefined> {
     const album = await this.albumsRepository.findOneBy({ id });
-
-    if (!album) {
-      throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
-    }
 
     album.name = updateAlbumDto.name;
     album.year = updateAlbumDto.year;
@@ -67,12 +58,6 @@ export class AlbumsService {
   }
 
   async remove(id: string) {
-    const album = await this.albumsRepository.findOneBy({ id });
-
-    if (!album) {
-      throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
-    }
-
     await this.albumsRepository.delete(id);
   }
 }

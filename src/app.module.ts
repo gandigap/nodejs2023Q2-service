@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DBService } from './db/db.service';
 import { UsersModule } from './users/users.module';
-import { DBModule } from './db/db.module';
 import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
@@ -17,7 +15,6 @@ import { AppDataSource } from './datasource';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate }),
     TypeOrmModule.forRoot(AppDataSource.options),
-    DBModule,
     UsersModule,
     ArtistsModule,
     TracksModule,
@@ -25,6 +22,6 @@ import { AppDataSource } from './datasource';
     FavoritesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DBService],
+  providers: [AppService],
 })
 export class AppModule {}
