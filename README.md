@@ -30,10 +30,29 @@ docker-compose up
 ```
 npm run migration:run
 ```
+if migrations doesn`t exist in folder ./src/migrations - you should look title "generate:migrations"
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## Generate migrations
+
+```
+npm run migration:generate ./src/migrations/example  
+``` 
+after that start migration:run
+
+## Docker vulnerable scanning
+
+```
+npm run docker-scan-db 
+``` 
+
+or
+
+```
+npm run docker-scan-app
+``` 
+
+
+
 
 ## Testing
 
@@ -63,11 +82,7 @@ To run only specific test suite with authorization
 npm run test:auth -- <path to suite>
 ```
 
-## Generate migrations
 
-```
-npm run migration:generate ./src/migrations/example  
-``` 
 ### Auto-fix and format
 
 ```
