@@ -1,21 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DBService } from './db/db.service';
 import { UsersModule } from './users/users.module';
-import { DBModule } from './db/db.module';
 import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { validate } from './config/env.validation';
+import { AppDataSource } from './datasource';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    DBModule,
+    ConfigModule.forRoot({ isGlobal: true, validate }),
+    TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
     ArtistsModule,
     TracksModule,
@@ -23,6 +22,6 @@ import { ConfigModule } from '@nestjs/config';
     FavoritesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DBService],
+  providers: [AppService],
 })
 export class AppModule {}

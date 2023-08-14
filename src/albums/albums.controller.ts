@@ -7,46 +7,51 @@ import {
   Delete,
   HttpStatus,
   ParseUUIDPipe,
-  HttpException,
   Put,
   HttpCode,
+  HttpException,
 } from '@nestjs/common';
+
+import { CustomErrors } from 'src/constants/errors';
+
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { CustomErrors } from 'src/constants/errors';
 
 @Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumsService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
+    return await this.albumsService.create(createAlbumDto);
   }
 
   @Get()
-  findAll() {
-    return this.albumsService.findAll();
+  async findAll() {
+    return await this.albumsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    const album = this.albumsService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const album = await this.albumsService.findOne(id);
+
     if (album) {
       return album;
     }
+
     throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    const album = this.albumsService.findOne(id);
+    const album = await this.albumsService.findOne(id);
+
     if (album) {
-      return this.albumsService.update(id, updateAlbumDto);
+      return await this.albumsService.update(id, updateAlbumDto);
     }
 
     throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
@@ -54,11 +59,13 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    const album = this.albumsService.findOne(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    const album = await this.albumsService.findOne(id);
+
     if (album) {
-      return this.albumsService.remove(id);
+      return await this.albumsService.remove(id);
     }
+
     throw new HttpException(CustomErrors.AlbumNotExist, HttpStatus.NOT_FOUND);
   }
 }

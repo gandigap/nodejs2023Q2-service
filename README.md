@@ -9,27 +9,50 @@
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
+## Commands
+
+
 ## Downloading
 
 ```
 git clone {repository URL}
 ```
 
-## Installing NPM modules
-
-```
-npm install
-```
 
 ## Running application
 
 ```
-npm start
+docker-compose up
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## Run migrations
+
+```
+npm run migration:run
+```
+if migrations doesn`t exist in folder ./src/migrations - you should look title "generate:migrations"
+
+## Generate migrations
+
+```
+npm run migration:generate ./src/migrations/example  
+``` 
+after that start migration:run
+
+## Docker vulnerable scanning
+
+```
+npm run docker-scan-db 
+``` 
+
+or
+
+```
+npm run docker-scan-app
+``` 
+
+
+
 
 ## Testing
 
@@ -58,6 +81,7 @@ To run only specific test suite with authorization
 ```
 npm run test:auth -- <path to suite>
 ```
+
 
 ### Auto-fix and format
 
