@@ -56,4 +56,8 @@ export class UsersService {
   async hashing(password: string): Promise<string> {
     return await bcrypt.hash(password, +process.env.CRYPT_SALT);
   }
+
+  async findByLogin(login: string) {
+    return await this.userRepository.findOne({ where: { login } });
+  }
 }
