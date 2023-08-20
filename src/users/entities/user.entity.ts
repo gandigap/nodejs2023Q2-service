@@ -18,6 +18,10 @@ export class User {
   @Column()
   @Exclude()
   password: string;
+  @Column('text', { nullable: true })
+  refreshToken?: string;
+  @Column('timestamp without time zone', { nullable: true })
+  tokenExpirationDate?: string;
 
   constructor(createUserDto: Partial<CreateUserDto>) {
     const timestamp = Date.now();

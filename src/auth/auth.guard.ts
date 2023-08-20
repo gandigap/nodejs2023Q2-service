@@ -1,16 +1,25 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
+
+import { tokenType } from 'src/constants/token';
+import { CustomErrors } from 'src/constants/errors';
 
 import { IS_PUBLIC_KEY } from './auth.decorator';
 
 @Injectable()
-export class JwtGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
-    super();
-  }
+export class AuthGuard implements CanActivate {
+  constructor(
+    private jwtService: JwtService,
+    private reflector: Reflector,
+  ) {}
 
-  canActivate(context: ExecutionContext) {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -20,6 +29,29 @@ export class JwtGuard extends AuthGuard('jwt') {
       return true;
     }
 
-    return super.canActivate(context);
+    const request = context.switchToHttp().getRequest();
+    const token = this.getTokenFromHeader(request);
+
+    if (!token) {
+      throw new UnauthorizedException(CustomErrors.TokenNotExist);
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
+
+      request['user'] = payload;
+    } catch (error) {
+      throw new UnauthorizedException(CustomErrors.VerifyFailed);
+    }
+
+    return true;
+  }
+
+  private getTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers['authorization']?.split(' ') ?? [];
+
+    return type === tokenType ? token : undefined;
   }
 }
