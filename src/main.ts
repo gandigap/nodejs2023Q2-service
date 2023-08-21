@@ -5,11 +5,15 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import * as yaml from 'js-yaml';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { LoggerService } from './logger/logger.service';
 
 const PORT = process.env.PORT;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new LoggerService(),
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

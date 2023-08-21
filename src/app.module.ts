@@ -12,6 +12,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { validate } from './config/env.validation';
 import { AppDataSource } from './datasource';
 import { AuthModule } from './auth/auth.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
     AlbumsModule,
     FavoritesModule,
     AuthModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
