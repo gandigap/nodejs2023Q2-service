@@ -33,6 +33,16 @@ async function bootstrap() {
 
   SwaggerModule.setup('doc', app, document);
 
+  process.on('uncaughtException', (error) => {
+    logger.error(`Uncaught ${error.name}: ${error.message}\n${error.stack}`);
+  });
+
+  process.on('unhandledRejection', (reason: Error) => {
+    logger.error(
+      `Unhandled promise rejection: ${reason.message}\n${reason.stack}`,
+    );
+  });
+
   await app.listen(PORT ? +PORT : 3000);
 }
 bootstrap();
