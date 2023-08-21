@@ -6,13 +6,20 @@ import { join } from 'path';
 import * as yaml from 'js-yaml';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { LoggerService } from './logger/logger.service';
+import { LoggerInterceptor } from './logger/logger.interceptor';
+import { AllExceptionFilter } from './filter/exception.filter';
 
 const PORT = process.env.PORT;
 
 async function bootstrap() {
+  const logger = new LoggerService();
+
   const app = await NestFactory.create(AppModule, {
     logger: new LoggerService(),
   });
+
+  app.useGlobalInterceptors(new LoggerInterceptor());
+  app.useGlobalFilters(new AllExceptionFilter(logger));
 
   app.useGlobalPipes(
     new ValidationPipe({
