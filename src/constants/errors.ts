@@ -9,6 +9,11 @@ export enum CustomErrors {
   FavoriteTrackNotExist = "Favorite track doesn't exist",
   AlbumNotExist = "Album doesn't exist",
   FavoriteAlbumNotExist = "Favorite album doesn't exist",
+  TokenNotExist = 'Token doesn`t exist',
+  VerifyFailed = 'Verify failed',
+  UserWithLoginNotExist = 'User with this login doesn`t exist',
+  PasswordsNotEdentic = 'Passwords don`t edentic',
+  RefreshTokenNotExist = 'Refresh token doesn`t exist',
 }
 
 export enum Entities {

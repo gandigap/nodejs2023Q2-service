@@ -13,6 +13,7 @@ import {
   Put,
   UseInterceptors,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserdDto } from './dto/update-password.dto';
@@ -49,8 +50,8 @@ export class UsersController {
     @Body() updatePasswordDto: UpdateUserdDto,
   ) {
     const { newPassword, oldPassword } = updatePasswordDto;
-
     const user = await this.usersService.findOne(id);
+
     if (newPassword === oldPassword) {
       throw new HttpException(
         CustomErrors.PasswordsEquals,
@@ -58,7 +59,15 @@ export class UsersController {
       );
     }
 
-    if (user && (await user).password !== oldPassword) {
+    if (!user) {
+      throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
+    }
+    const isIdenticPassword = await bcrypt.compare(
+      updatePasswordDto.oldPassword,
+      user.password,
+    );
+
+    if (!isIdenticPassword) {
       throw new HttpException(
         CustomErrors.OldPasswordWrong,
         HttpStatus.FORBIDDEN,
@@ -68,8 +77,6 @@ export class UsersController {
     if (user) {
       return await this.usersService.update(id, updatePasswordDto);
     }
-
-    throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
   }
 
   @Delete(':id')

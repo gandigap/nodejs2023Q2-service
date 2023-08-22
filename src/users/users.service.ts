@@ -1,10 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+
+import { CustomErrors } from 'src/constants/errors';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserdDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CustomErrors } from 'src/constants/errors';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +18,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const user = new User(createUserDto);
+    user.password = await this.hashing(user.password);
     await this.userRepository.insert(user);
     return user;
   }
@@ -47,5 +51,13 @@ export class UsersService {
       throw new HttpException(CustomErrors.UserNotExist, HttpStatus.NOT_FOUND);
     }
     await this.userRepository.delete(id);
+  }
+
+  async hashing(password: string): Promise<string> {
+    return await bcrypt.hash(password, +process.env.CRYPT_SALT);
+  }
+
+  async findByLogin(login: string) {
+    return await this.userRepository.findOne({ where: { login } });
   }
 }
